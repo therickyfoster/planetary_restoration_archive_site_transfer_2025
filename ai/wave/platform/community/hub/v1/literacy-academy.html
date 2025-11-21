@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Literacy Academy — AI Wave</title>
+  <style>
+    :root {
+      --bg:#0a0e17; --fg:#e8f1ff; --muted:#7a92b0; --accent:#58a6ff;
+      --ok:#2ecc71; --warn:#ffb020; --danger:#ff4d4d; --info:#3498db;
+      --card:#0f1621; --glass:rgba(15,22,33,0.75); --border:#1e2a3f;
+      --purple:#a78bfa; --teal:#14b8a6; --orange:#fb923c;
+    }
+    * { box-sizing:border-box; margin:0; padding:0 }
+    body { 
+      background:var(--bg); color:var(--fg); 
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      line-height:1.6;
+    }
+    nav {
+      background:rgba(10,14,23,0.9); backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border); padding:1rem 1.5rem;
+    }
+    nav a {
+      color:var(--muted); text-decoration:none; margin:0 1rem;
+      transition:color 0.2s;
+    }
+    nav a:hover { color:var(--fg) }
+    main { max-width:1400px; margin:2rem auto; padding:0 1.5rem }
+    h1 { 
+      font-size:2.5rem; margin-bottom:0.5rem;
+      background:linear-gradient(135deg,var(--fg),var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .subtitle { color:var(--muted); font-size:1.1rem; margin-bottom:2rem }
+    
+    /* Tabs */
+    .tabs {
+      display:flex; gap:0.5rem; margin:2rem 0; border-bottom:1px solid var(--border);
+      flex-wrap:wrap; overflow-x:auto;
+    }
+    .tab {
+      padding:1rem 1.5rem; cursor:pointer; border-bottom:2px solid transparent;
+      transition:all 0.3s; font-weight:500; color:var(--muted);
+      white-space:nowrap;
+    }
+    .tab:hover { color:var(--fg) }
+    .tab.active { color:var(--accent); border-bottom-color:var(--accent) }
+    .tab-content { display:none }
+    .tab-content.active { display:block; animation:fadeIn 0.4s }
+    
+    /* Course Cards */
+    .course-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; margin:2rem 0 }
+    .course-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:20px; padding:1.8rem; transition:transform 0.3s,box-shadow 0.3s;
+      box-shadow:0 10px 40px rgba(0,0,0,0.3); position:relative; overflow:hidden;
+    }
+    .course-card:hover { transform:translateY(-4px); box-shadow:0 15px 50px rgba(0,0,0,0.4) }
+    .course-card:before {
+      content:''; position:absolute; top:0; left:0; right:0; height:4px;
+      background:linear-gradient(90deg,var(--accent),var(--purple));
+    }
+    .course-header {
+      display:flex; align-items:center; gap:1rem; margin-bottom:1rem;
+    }
+    .course-icon {
+      width:60px; height:60px; border-radius:16px;
+      background:linear-gradient(135deg,var(--accent),var(--purple));
+      display:grid; place-items:center; font-size:2rem;
+    }
+    .course-meta { flex:1 }
+    .course-title { font-size:1.2rem; font-weight:600; margin-bottom:0.3rem }
+    .course-duration { font-size:0.85rem; color:var(--muted) }
+    .course-desc { color:var(--muted); margin:1rem 0; line-height:1.7 }
+    
+    /* Progress */
+    .progress-bar {
+      width:100%; height:8px; background:rgba(255,255,255,0.05);
+      border-radius:999px; overflow:hidden; margin:1rem 0;
+    }
+    .progress-fill {
+      height:100%; background:linear-gradient(90deg,var(--accent),var(--purple));
+      transition:width 0.5s ease-out;
+    }
+    .progress-label {
+      font-size:0.85rem; color:var(--muted); text-align:center;
+      margin-top:0.5rem;
+    }
+    
+    /* Lesson List */
+    .lesson-list { list-style:none; margin:1rem 0 }
+    .lesson-item {
+      padding:0.8rem; margin:0.5rem 0; background:var(--glass);
+      border:1px solid var(--border); border-radius:10px;
+      display:flex; align-items:center; gap:1rem;
+      transition:background 0.2s; cursor:pointer;
+    }
+    .lesson-item:hover { background:rgba(255,255,255,0.05) }
+    .lesson-number {
+      width:32px; height:32px; border-radius:50%;
+      background:var(--accent); color:#000;
+      display:grid; place-items:center; font-weight:700;
+      font-size:0.9rem; flex-shrink:0;
+    }
+    .lesson-item.completed .lesson-number {
+      background:var(--ok);
+    }
+    .lesson-content { flex:1 }
+    .lesson-title { font-weight:600; color:var(--fg) }
+    .lesson-time { font-size:0.85rem; color:var(--muted) }
+    .lesson-check {
+      width:24px; height:24px; border:2px solid var(--border);
+      border-radius:6px; flex-shrink:0; display:grid; place-items:center;
+    }
+    .lesson-item.completed .lesson-check {
+      background:var(--ok); border-color:var(--ok);
+    }
+    .lesson-item.completed .lesson-check:after {
+      content:'✓'; color:#fff; font-weight:700;
+    }
+    
+    /* Buttons */
+    .btn {
+      display:inline-flex; align-items:center; gap:0.6rem;
+      padding:0.8rem 1.4rem; border-radius:12px; font-weight:500;
+      border:none; cursor:pointer; transition:all 0.3s;
+      font-size:0.95rem; text-decoration:none;
+    }
+    .btn-primary { background:var(--accent); color:#000 }
+    .btn-primary:hover { background:#7eb8ff; transform:translateY(-2px) }
+    .btn-secondary { background:var(--glass); color:var(--fg); border:1px solid var(--border) }
+    .btn-success { background:var(--ok); color:#fff }
+    
+    /* Stats */
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:1.5rem; margin:2rem 0;
+    }
+    .stat-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:1.5rem; text-align:center;
+    }
+    .stat-value {
+      font-size:2.5rem; font-weight:700;
+      background:linear-gradient(135deg,var(--accent),var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .stat-label { color:var(--muted); font-size:0.9rem; margin-top:0.5rem }
+    
+    /* Badges */
+    .badge {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding:0.4rem 0.8rem; border-radius:999px;
+      font-size:0.85rem; border:1px solid; font-weight:500;
+    }
+    .badge.beginner { border-color:var(--ok); color:var(--ok); background:rgba(46,204,113,0.1) }
+    .badge.intermediate { border-color:var(--warn); color:var(--warn); background:rgba(255,176,32,0.1) }
+    .badge.advanced { border-color:var(--danger); color:var(--danger); background:rgba(255,77,77,0.1) }
+    
+    /* Certificate */
+    .certificate {
+      background:linear-gradient(135deg,rgba(88,166,255,0.1),rgba(167,139,250,0.1));
+      border:2px solid var(--accent); border-radius:16px;
+      padding:2rem; margin:2rem 0; text-align:center;
+    }
+    .certificate-icon {
+      font-size:4rem; margin-bottom:1rem;
+    }
+    
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+    
+    @media (max-width:768px) {
+      .course-grid { grid-template-columns:1fr }
+      h1 { font-size:2rem }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">← Home</a>
+    <a href="crisis-response.html">Crisis Response</a>
+    <a href="tools.html">Tools</a>
+    <a href="community.html">Community</a>
+    <a href="resources.html">Resources</a>
+  </nav>
+
+  <main>
+    <h1>🎓 AI Literacy Academy</h1>
+    <p class="subtitle">
+      Free, comprehensive education for everyone. From basics to advanced policy. 
+      Offline-ready, multilingual, accessible.
+    </p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">54</div>
+        <div class="stat-label">Available Courses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="yourProgress">0%</div>
+        <div class="stat-label">Your Progress</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">847,203</div>
+        <div class="stat-label">Global Learners</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">156</div>
+        <div class="stat-label">Countries</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="fundamentals">🌟 Fundamentals</div>
+      <div class="tab" data-tab="safety">🛡️ Safety & Ethics</div>
+      <div class="tab" data-tab="technical">💻 Technical</div>
+      <div class="tab" data-tab="policy">🏛️ Policy & Governance</div>
+      <div class="tab" data-tab="progress">📊 My Progress</div>
+    </div>
+
+    <!-- Fundamentals Track -->
+    <div class="tab-content active" id="fundamentals">
+      <div class="course-grid">
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🤖</div>
+            <div class="course-meta">
+              <div class="course-title">What is AI? A Human Introduction</div>
+              <div class="course-duration">⏱️ 15 minutes • <span class="badge beginner">Beginner</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Understand machine learning, neural networks, and AI capabilities without technical jargon. 
+            Interactive examples using everyday scenarios.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%" data-course="ai-intro"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" onclick="startCourse('ai-intro')" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🔍</div>
+            <div class="course-meta">
+              <div class="course-title">Recognizing AI in Daily Life</div>
+              <div class="course-duration">⏱️ 20 minutes • <span class="badge beginner">Beginner</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Identify AI systems you interact with every day. Learn about recommendation algorithms, 
+            facial recognition, voice assistants, and more.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%" data-course="ai-daily"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" onclick="startCourse('ai-daily')" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🌍</div>
+            <div class="course-meta">
+              <div class="course-title">AI's Impact on Society</div>
+              <div class="course-duration">⏱️ 30 minutes • <span class="badge intermediate">Intermediate</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Employment transformation, healthcare opportunities, education personalization, 
+            democracy challenges. Real case studies from around the world.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%" data-course="ai-society"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" onclick="startCourse('ai-society')" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">👨‍👩‍👧‍👦</div>
+            <div class="course-meta">
+              <div class="course-title">AI Safety for Families</div>
+              <div class="course-duration">⏱️ 25 minutes • <span class="badge beginner">Beginner</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Teaching children about AI and privacy. Setting healthy boundaries with assistants. 
+            Building digital resilience as a family unit.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%" data-course="ai-family"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" onclick="startCourse('ai-family')" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety & Ethics Track -->
+    <div class="tab-content" id="safety">
+      <div class="course-grid">
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">⚖️</div>
+            <div class="course-meta">
+              <div class="course-title">Ethical AI Framework</div>
+              <div class="course-duration">⏱️ 40 minutes • <span class="badge intermediate">Intermediate</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            The five pillars: fairness, transparency, accountability, privacy, and beneficence. 
+            Learn to evaluate AI systems against ethical standards.
+          </p>
+          <ul class="lesson-list">
+            <li class="lesson-item" onclick="toggleLesson(this)">
+              <div class="lesson-number">1</div>
+              <div class="lesson-content">
+                <div class="lesson-title">Introduction to AI Ethics</div>
+                <div class="lesson-time">8 minutes</div>
+              </div>
+              <div class="lesson-check"></div>
+            </li>
+            <li class="lesson-item" onclick="toggleLesson(this)">
+              <div class="lesson-number">2</div>
+              <div class="lesson-content">
+                <div class="lesson-title">Fairness & Bias</div>
+                <div class="lesson-time">10 minutes</div>
+              </div>
+              <div class="lesson-check"></div>
+            </li>
+            <li class="lesson-item" onclick="toggleLesson(this)">
+              <div class="lesson-number">3</div>
+              <div class="lesson-content">
+                <div class="lesson-title">Transparency & Explainability</div>
+                <div class="lesson-time">8 minutes</div>
+              </div>
+              <div class="lesson-check"></div>
+            </li>
+            <li class="lesson-item" onclick="toggleLesson(this)">
+              <div class="lesson-number">4</div>
+              <div class="lesson-content">
+                <div class="lesson-title">Accountability Structures</div>
+                <div class="lesson-time">7 minutes</div>
+              </div>
+              <div class="lesson-check"></div>
+            </li>
+            <li class="lesson-item" onclick="toggleLesson(this)">
+              <div class="lesson-number">5</div>
+              <div class="lesson-content">
+                <div class="lesson-title">Privacy by Design</div>
+                <div class="lesson-time">7 minutes</div>
+              </div>
+              <div class="lesson-check"></div>
+            </li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Continue Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🔐</div>
+            <div class="course-meta">
+              <div class="course-title">Privacy & Consent in AI</div>
+              <div class="course-duration">⏱️ 35 minutes • <span class="badge intermediate">Intermediate</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Data rights, informed consent, GDPR/CCPA compliance, data minimization, 
+            and how to protect yourself and your community.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🎯</div>
+            <div class="course-meta">
+              <div class="course-title">Detecting & Mitigating Bias</div>
+              <div class="course-duration">⏱️ 45 minutes • <span class="badge advanced">Advanced</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Types of algorithmic bias, real-world impacts, statistical parity, 
+            equal opportunity, and hands-on testing methodologies.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🚨</div>
+            <div class="course-meta">
+              <div class="course-title">AI Red Flags & Warning Signs</div>
+              <div class="course-duration">⏱️ 30 minutes • <span class="badge beginner">Beginner</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            When to be concerned. Identifying dangerous AI behavior, privacy violations, 
+            manipulation tactics, and escalation procedures.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical Track -->
+    <div class="tab-content" id="technical">
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2rem; margin-bottom:2rem">
+        <h2 style="color:var(--accent); margin-bottom:1rem">💻 For Developers & Technical Leaders</h2>
+        <p style="color:var(--muted)">
+          Advanced modules on implementing safety measures in AI systems. Prerequisite: Programming experience and basic ML knowledge.
+        </p>
+      </div>
+
+      <div class="course-grid">
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🔄</div>
+            <div class="course-meta">
+              <div class="course-title">Secure AI Development Lifecycle</div>
+              <div class="course-duration">⏱️ 60 minutes • <span class="badge advanced">Advanced</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Integrating safety from design to deployment. Threat modeling, secure training pipelines, 
+            model cards, and production monitoring.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🛡️</div>
+            <div class="course-meta">
+              <div class="course-title">Adversarial Testing & Robustness</div>
+              <div class="course-duration">⏱️ 75 minutes • <span class="badge advanced">Advanced</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Building resilient systems. FGSM, PGD, data poisoning, prompt injection attacks, 
+            and defensive distillation techniques.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🔬</div>
+            <div class="course-meta">
+              <div class="course-title">Interpretability & Explainability</div>
+              <div class="course-duration">⏱️ 50 minutes • <span class="badge advanced">Advanced</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            LIME, SHAP, attention visualization, feature importance. Making AI decisions 
+            transparent and understandable to stakeholders.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">📊</div>
+            <div class="course-meta">
+              <div class="course-title">Monitoring & Incident Response</div>
+              <div class="course-duration">⏱️ 55 minutes • <span class="badge advanced">Advanced</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Real-time anomaly detection, alerting pipelines, automated rollback, 
+            incident playbooks, and post-mortem analysis.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Policy & Governance Track -->
+    <div class="tab-content" id="policy">
+      <div class="course-grid">
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🏛️</div>
+            <div class="course-meta">
+              <div class="course-title">Community Governance Toolkit</div>
+              <div class="course-duration">⏱️ 45 minutes • <span class="badge intermediate">Intermediate</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Establishing local AI policies. Consensus-building, democratic oversight, 
+            accountability mechanisms, and conflict resolution frameworks.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">📊</div>
+            <div class="course-meta">
+              <div class="course-title">AI Impact Assessment</div>
+              <div class="course-duration">⏱️ 50 minutes • <span class="badge intermediate">Intermediate</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Evaluate AI systems before deployment. Social impact, economic disruption, 
+            privacy risks, equity analysis, and sustainability review.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">📜</div>
+            <div class="course-meta">
+              <div class="course-title">Regulatory Compliance (GDPR, CCPA, AI Act)</div>
+              <div class="course-duration">⏱️ 60 minutes • <span class="badge advanced">Advanced</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Understanding global AI regulations. GDPR data protection, CCPA privacy rights, 
+            EU AI Act requirements, and documentation best practices.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon">🗳️</div>
+            <div class="course-meta">
+              <div class="course-title">Democratic AI Governance</div>
+              <div class="course-duration">⏱️ 40 minutes • <span class="badge intermediate">Intermediate</span></div>
+            </div>
+          </div>
+          <p class="course-desc">
+            Participatory decision-making, transparent voting systems, citizen assemblies, 
+            and ensuring AI serves the public interest.
+          </p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-label">Not started</div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1rem">
+            Start Course →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Progress Tab -->
+    <div class="tab-content" id="progress">
+      <div class="certificate">
+        <div class="certificate-icon">🏆</div>
+        <h2 style="margin-bottom:0.5rem">AI Safety Professional Certification</h2>
+        <p style="color:var(--muted); margin-bottom:1.5rem">
+          Complete all 4 tracks to earn your certification. Recognized by 2,847+ organizations worldwide.
+        </p>
+        <div class="progress-bar" style="max-width:600px; margin:1rem auto">
+          <div class="progress-fill" style="width:0%" id="overallProgress"></div>
+        </div>
+        <div class="progress-label" id="overallLabel">0 of 54 courses completed</div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; margin-top:3rem">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:16
