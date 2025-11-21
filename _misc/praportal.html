@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>PRA Portal — Modular GitHub Gateway</title>
+  <meta name="description" content="A modular, offline-capable portal that surfaces GitHub repos, docs, and missions with a pluggable presentation schema." />
+  <meta name="theme-color" content="#0b1220" />
+  <style>
+    :root{
+      --bg:#0b1220;--panel:#0f172a;--ink:#e5e7eb;--muted:#94a3b8;--accent:#7dd3fc;--ok:#34d399;--warn:#f59e0b;--danger:#f87171;
+      --card:#111827;--ring:#334155;--grid: minmax(280px,1fr);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,rgba(125,211,252,.12),transparent),
+          radial-gradient(900px 500px at 10% 110%,rgba(52,211,153,.08),transparent),var(--bg);color:var(--ink);
+          font:500 16px/1.5 system-ui,-apple-system,Segoue UI,Roboto,Inter,Ubuntu,"Helvetica Neue",Arial}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;background:linear-gradient(#0b1220,rgba(11,18,32,.7));backdrop-filter:blur(6px);z-index:10}
+    .bar{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--ring)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 90deg,var(--accent),#60a5fa,#a78bfa,#34d399);box-shadow:0 0 0 2px #0008}
+    .title{font-size:18px;font-weight:700;letter-spacing:.3px}
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    input,select,button{background:#0f172a;border:1px solid var(--ring);color:var(--ink);padding:10px 12px;border-radius:10px}
+    button{cursor:pointer}
+    main{display:grid;gap:24px;margin-top:24px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,var(--grid));gap:16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 20%),var(--card);border:1px solid var(--ring);border-radius:18px;padding:16px;position:relative;overflow:hidden}
+    .card h3{margin:0 0 6px 0;font-size:18px}
+    .card p{margin:6px 0 0 0;color:var(--muted)}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--ring);color:var(--muted);font-size:12px;margin-right:6px}
+    .footer{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:12px}
+    .badge{font-size:12px;color:#cbd5e1}
+    .stat{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#0b1325;border:1px solid var(--ring)}
+
+    /* Module chrome */
+    section.module{border:1px dashed var(--ring);border-radius:16px;padding:16px}
+    section.module>header{display:flex;justify-content:space-between;align-items:center;border:none;position:static;background:transparent;padding:0 0 12px 0}
+    section.module h2{margin:0;font-size:20px}
+
+    details{border:1px solid var(--ring);padding:10px;border-radius:12px}
+    summary{cursor:pointer}
+    .empty{border:1px dashed var(--ring);border-radius:12px;padding:24px;color:var(--muted);text-align:center}
+
+    /* Simple parallax banner */
+    .banner{height:220px;border:1px solid var(--ring);border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(180deg,rgba(125,211,252,.15),transparent),radial-gradient(600px 200px at 30% 10%,rgba(167,139,250,.2),transparent)}
+    .banner .stars{position:absolute;inset:0;background:radial-gradient(2px 2px at 20% 30%,#fff6,transparent),radial-gradient(2px 2px at 70% 80%,#fff6,transparent),radial-gradient(1px 1px at 50% 60%,#fff6,transparent)}
+    .banner .fg{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(11,18,32,.8));}
+    .banner h1{position:absolute;left:24px;bottom:18px;margin:0;font-size:28px}
+
+    footer.site{margin:36px 0 12px;color:var(--muted);text-align:center}
+    .hide{display:none!important}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title">PRA Portal — Modular GitHub Gateway</div>
+      </div>
+      <div class="controls">
+        <input id="search" placeholder="Search modules & repos…" />
+        <select id="view">
+          <option value="cards">Cards</option>
+          <option value="list">List</option>
+        </select>
+        <button id="refresh">↻ Refresh</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="banner" aria-hidden="true">
+      <div class="stars" data-depth="0.2"></div>
+      <div class="fg" data-depth="0.6"></div>
+      <h1>Open, modular, future‑proof.</h1>
+    </div>
+
+    <main id="portal"></main>
+
+    <footer class="site">Built as a single-file, offline‑friendly starter. Edit the JSON below to add/arrange modules without touching the JS.</footer>
+
+    <!-- ===== Configurable modular schema (edit this) ===== -->
+    <script type="application/json" id="portal-config">
+    {
+      "owner": "TheRickyFoster",
+      "title": "Planetary Restoration Archive — Portal",
+      "modules": [
+        {
+          "id": "repos",
+          "type": "github.repos",
+          "title": "GitHub Repositories",
+          "params": {"owner": "TheRickyFoster", "topics": ["education","gamification","planetary","ai","dao"], "limit": 30}
+        },
+        {
+          "id": "missions",
+          "type": "catalog",
+          "title": "Active Missions",
+          "params": {
+            "items": [
+              {"name": "__Siberian Apple Orchard Cascade","kind":"reforestation","status":"alpha","href":"https://github.com/TheRickyFoster/planetary-restoration-archive","score":0.91},
+              {"name": "Lightforge (Emotional Transformation Engine)","kind":"education","status":"alpha","href":"https://github.com/TheRickyFoster","score":0.84},
+              {"name": "Foster's Forge (Open Gamification)","kind":"education","status":"design","href":"https://github.com/TheRickyFoster","score":0.8}
+            ]
+          }
+        },
+        {
+          "id": "docs",
+          "type": "docs.links",
+          "title": "Key Docs",
+          "params": {
+            "links": [
+              {"label": "PRA Project Index","href": "https://planetaryrestorationarchive.com/project/index/"},
+              {"label": "RegenNode — Beijing","href": "https://github.com/TheRickyFoster/planetary-restoration-archive/tree/main/city-deployments/china/beijing"}
+            ]
+          }
+        }
+      ]
+    }
+    </script>
+  </div>
+
+  <script>
+    // --- lightweight utilities ---
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => [...el.querySelectorAll(q)];
+
+    // Simple parallax
+    document.addEventListener('mousemove', (e)=>{
+      const r = document.body.getBoundingClientRect();
+      const cx = (e.clientX - r.width/2)/r.width;
+      const cy = (e.clientY - r.height/2)/r.height;
+      $$('.banner [data-depth]').forEach(el=>{
+        const d = parseFloat(el.dataset.depth||0); el.style.transform = `translate(${cx*12*d}px,${cy*12*d}px)`;
+      });
+    });
+
+    // Service worker (optional offline caching)
+    if ('serviceWorker' in navigator) {
+      const sw = `self.addEventListener('install',e=>{e.waitUntil(caches.open('pra-portal-v1').then(c=>c.addAll(['./'])))});
+        self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})`;
+      const blob = new Blob([sw], {type:'text/javascript'});
+      const url = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(url).catch(()=>{});
+    }
+
+    // Read config
+    const CONFIG = JSON.parse(document.getElementById('portal-config').textContent);
+
+    // Registry of module renderers
+    const Modules = {
+      async "github.repos"(slot, params){
+        const owner = params.owner || CONFIG.owner;
+        const qs = new URLSearchParams({ per_page: String(params.limit||30), sort:'updated' });
+        const endpoint = `https://api.github.com/users/${owner}/repos?${qs}`;
+        let data = [];
+        try{
+          const res = await fetch(endpoint, {headers:{'Accept':'application/vnd.github+json'}});
+          data = await res.json();
+        }catch(err){ console.warn('GitHub fetch failed', err); }
+
+        if (!Array.isArray(data)){
+          slot.innerHTML = `<div class="empty">Unable to load GitHub data right now. Try again later.</div>`;return;
+        }
+
+        // Filter by topics if requested (requires an extra call per repo; we skip heavy calls and do a client match by name/desc)
+        const topics = (params.topics||[]).map(s=>s.toLowerCase());
+        const filtered = data.filter(r=>{
+          const hay = `${r.name} ${r.description||''}`.toLowerCase();
+          return topics.length ? topics.some(t=>hay.includes(t)) : true;
+        });
+
+        const view = $('#view').value;
+        if (view === 'list') {
+          const ul = document.createElement('ul');
+          ul.style.listStyle='none'; ul.style.padding=0; ul.style.margin=0;
+          filtered.forEach(r=>{
+            const li = document.createElement('li');
+            li.className='card';
+            li.innerHTML = `<h3><a href="${r.html_url}" target="_blank">${r.name}</a></h3>
+                            <p>${r.description||'No description'}</p>
+                            <div class="footer">
+                              <span class="stat">★ ${r.stargazers_count}</span>
+                              <span class="stat">⬇ ${r.forks_count}</span>
+                              <span class="badge">Updated ${new Date(r.updated_at).toLocaleDateString()}</span>
+                            </div>`;
+            ul.appendChild(li);
+          });
+          slot.replaceChildren(ul);
+        } else {
+          const grid = document.createElement('div'); grid.className='grid';
+          filtered.forEach(r=>{
+            const el = document.createElement('article'); el.className='card';
+            el.innerHTML = `<h3><a href="${r.html_url}" target="_blank" rel="noopener">${r.name}</a></h3>
+                            <p>${r.description||'No description'}</p>
+                            <div class="footer">
+                              <span>
+                                <span class="tag">${r.language||'—'}</span>
+                                <span class="tag">${(r.topics||[]).slice(0,3).join(' • ')}</span>
+                              </span>
+                              <span>
+                                <span class="stat" title="Stars">★ ${r.stargazers_count}</span>
+                                <span class="stat" title="Forks">⎇ ${r.forks_count}</span>
+                              </span>
+                            </div>`;
+            grid.appendChild(el);
+          });
+          slot.replaceChildren(grid);
+        }
+      },
+
+      "catalog"(slot, params){
+        const items = params.items||[];
+        const grid = document.createElement('div'); grid.className='grid';
+        items.forEach(it=>{
+          const el = document.createElement('article'); el.className='card';
+          const score = typeof it.score==='number'?Math.round(it.score*100):null;
+          el.innerHTML = `<h3>${it.href?`<a href="${it.href}" target="_blank">${it.name}</a>`:it.name}</h3>
+                          <p><span class="tag">${it.kind||'item'}</span>
+                             <span class="tag">${it.status||'—'}</span>
+                             ${score!=null?`<span class="tag">${score}% ready</span>`:''}
+                          </p>`;
+          grid.appendChild(el);
+        });
+        slot.replaceChildren(grid);
+      },
+
+      "docs.links"(slot, params){
+        const links = params.links||[];
+        const list = document.createElement('div'); list.className='grid';
+        links.forEach(l=>{
+          const a = document.createElement('a'); a.href=l.href; a.target='_blank'; a.rel='noopener';
+          a.className='card'; a.innerHTML = `<h3>${l.label}</h3><p>${l.href}</p>`;
+          list.appendChild(a);
+        });
+        slot.replaceChildren(list);
+      }
+    };
+
+    function render(){
+      const root = document.getElementById('portal');
+      root.innerHTML = '';
+      CONFIG.modules.forEach(async (m)=>{
+        const section = document.createElement('section'); section.className='module'; section.dataset.module=m.type;
+        section.innerHTML = `<header><h2>${m.title||m.id}</h2><div></div></header><div class="slot"></div>`;
+        root.appendChild(section);
+        const slot = section.querySelector('.slot');
+        const fn = Modules[m.type];
+        if (!fn){ slot.innerHTML = `<div class="empty">No renderer for module type: <code>${m.type}</code></div>`; return; }
+        await fn(slot, m.params||{});
+      });
+    }
+
+    // Search filter across modules (basic)
+    function applySearch(){
+      const q = ($('#search').value||'').toLowerCase();
+      $$('.module').forEach(mod=>{
+        const hay = mod.textContent.toLowerCase();
+        mod.classList.toggle('hide', q && !hay.includes(q));
+      });
+    }
+
+    // Wire controls
+    $('#refresh').addEventListener('click', render);
+    $('#view').addEventListener('change', render);
+    $('#search').addEventListener('input', applySearch);
+
+    // Initial paint
+    render();
+  </script>
+</body>
+</html>

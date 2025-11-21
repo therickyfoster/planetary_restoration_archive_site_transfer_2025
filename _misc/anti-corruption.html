@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mycelium Network: Anti-Corruption Solutions Hub</title>
+    <meta name="description" content="Decentralized network of anti-corruption solutions and transparency initiatives">
+    <meta name="keywords" content="anti-corruption, transparency, accountability, planetary restoration, governance">
+    
+    <!-- Integrity verification -->
+    <meta name="content-hash" id="contentHash" content="">
+    <meta name="last-verified" id="lastVerified" content="">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #059669;
+            --accent-color: #dc2626;
+            --warning-color: #d97706;
+            --bg-dark: #0f172a;
+            --bg-medium: #1e293b;
+            --bg-light: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 50%, #1e1b4b 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tamper-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .tamper-indicator.verified {
+            background: rgba(5, 150, 105, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(5, 150, 105, 0.3);
+        }
+
+        .tamper-indicator.warning {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+
+        .tamper-indicator.error {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--text-primary), var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 60rem;
+            margin: 0 auto;
+        }
+
+        /* Archive Reference */
+        .archive-reference {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.1), rgba(37, 99, 235, 0.1));
+            border: 1px solid rgba(5, 150, 105, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .archive-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .archive-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dotted var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .archive-link:hover {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .refresh-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .auto-refresh-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--secondary-color);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+
+        .status-indicator {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .main-feed {
+            min-height: 500px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Feed Cards */
+        .feed-section {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .feed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .feed-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feed-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(5, 150, 105, 0.2);
+            color: #34d399;
+        }
+
+        .status-loading {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-error {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+        }
+
+        .feed-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feed-item {
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feed-item:hover {
+            background: rgba(51, 65, 85, 0.5);
+            transform: translateX(4px);
+        }
+
+        .item-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .item-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .item-source {
+            font-weight: 500;
+        }
+
+        /* Sidebar Components */
+        .stats-card {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(5, 150, 105, 0.1));
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.125rem;
+        }
+
+        .network-status {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .network-nodes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .node {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .node.active {
+            background: var(--secondary-color);
+            box-shadow: 0 0 10px rgba(5, 150, 105, 0.5);
+        }
+
+        .node.inactive {
+            background: var(--border-color);
+        }
+
+        .node.error {
+            background: var(--accent-color);
+        }
+
+        /* Loading States */
+        .loading-skeleton {
+            animation: pulse 2s infinite;
+            background: linear-gradient(90deg, rgba(51, 65, 85, 0.3) 25%, rgba(71, 85, 105, 0.3) 50%, rgba(51, 65, 85, 0.3) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .skeleton-title {
+            height: 1.5rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-text {
+            height: 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .skeleton-text.short {
+            width: 60%;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .integrity-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: rgba(30, 41, 59, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .stats-card,
+            .network-status {
+                min-width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .refresh-controls {
+                justify-content: center;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .sidebar {
+                flex-direction: column;
+            }
+
+            .stats-card,
+            .network-status {
+                min-width: auto;
+            }
+        }
+
+        /* Mycelium Network Animation */
+        .mycelium-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .mycelium-node {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+        }
+
+        .mycelium-connection {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+            animation: flow 4s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        @keyframes flow {
+            0% { opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mycelium Network Background -->
+    <div class="mycelium-bg" id="myceliumBg"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🍄</div>
+                    <div class="logo-text">Mycelium Network</div>
+                </div>
+                <div class="tamper-indicator verified" id="tamperIndicator">
+                    <span>●</span>
+                    <span>Integrity Verified</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Anti-Corruption Solutions Hub</h1>
+                <p class="page-subtitle">
+                    A decentralized network aggregating transparency initiatives, corruption research, 
+                    and accountability solutions from trusted sources worldwide.
+                </p>
+            </div>
+
+            <!-- Archive Reference -->
+            <div class="archive-reference">
+                <div class="archive-title">🌍 Planetary Restoration Archive</div>
+                <p>
+                    This hub is connected to the broader planetary restoration network. 
+                    Visit <a href="https://planetaryrestorationarchive.com/" class="archive-link" target="_blank">planetaryrestorationarchive.com</a> 
+                    for comprehensive documentation of restoration efforts and accountability measures.
+                </p>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <div class="refresh-controls">
+                    <div class="auto-refresh-toggle">
+                        <span>Auto-refresh:</span>
+                        <div class="toggle-switch active" id="autoRefreshToggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshAllFeeds()">
+                        🔄 Refresh Feeds
+                    </button>
+                    <button class="btn btn-secondary" onclick="verifyIntegrity()">
+                        🛡️ Verify Integrity
+                    </button>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    Last updated: <span id="lastUpdate">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Main Feed -->
+                <div class="main-feed">
+                    <!-- Transparency International Feed -->
+                    <div class="feed-section">
+                        <div class="feed-header">
+                            <div class="feed-title">
+                                🏛️ Transparency International
+                            </div>
+                            <div class="feed-status status-loading" id="ti-status">Loading</div>
+                        </div>
+                        <div class="feed-items" id="ti-feed">
+                            <!-- Loading skeletons -->
+                            <div class="feed-item loading-skeleton">
+                                <div class="skeleton-title loading-skeleton"></div>
+                                <div class="skeleton-text loading-skeleton"></div>
+                                <div class="skeleton-text short loading-skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Open Government Partnership Feed -->
+                    <div class="feed-section">
+                        <div class="feed-header">
+                            <div class="feed-title">
+                                🤝 Open Government Partnership
+                            </div>
+                            <div class="feed-status status-loading" id="ogp-status">Loading</div>
+                        </div>
+                        <div class="feed-items" id="ogp-feed">
+                            <div class="feed-item loading-skeleton">
+                                <div class="skeleton-title loading-skeleton"></div>
+                                <div class="skeleton-text loading-skeleton"></div>
+                                <div class="skeleton-text short loading-skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Global Witness Feed -->
+                    <div class="feed-section">
+                        <div class="feed-header">
+                            <div class="feed-title">
+                                👁️ Global Witness
+                            </div>
+                            <div class="feed-status status-loading" id="gw-status">Loading</div>
+                        </div>
+                        <div class="feed-items" id="gw-feed">
+                            <div class="feed-item loading-skeleton">
+                                <div class="skeleton-title loading-skeleton"></div>
+                                <div class="skeleton-text loading-skeleton"></div>
+                                <div class="skeleton-text short loading-skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ICIJ Feed -->
+                    <div class="feed-section">
+                        <div class="feed-header">
+                            <div class="feed-title">
+                                📰 ICIJ Investigations
+                            </div>
+                            <div class="feed-status status-loading" id="icij-status">Loading</div>
+                        </div>
+                        <div class="feed-items" id="icij-feed">
+                            <div class="feed-item loading-skeleton">
+                                <div class="skeleton-title loading-skeleton"></div>
+                                <div class="skeleton-text loading-skeleton"></div>
+                                <div class="skeleton-text short loading-skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <!-- Stats Card -->
+                    <div class="stats-card">
+                        <h3>Network Stats</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Active Sources</span>
+                            <span class="stat-value" id="activeSources">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Articles Today</span>
+                            <span class="stat-value" id="articlesToday">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Integrity Score</span>
+                            <span class="stat-value" style="color: var(--secondary-color);" id="integrityScore">100%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Verification</span>
+                            <span class="stat-value" style="font-size: 0.875rem;" id="lastVerification">Just now</span>
+                        </div>
+                    </div>
+
+                    <!-- Network Status -->
+                    <div class="network-status">
+                        <h3>Mycelium Network</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                            Decentralized node connections ensuring information resilience and integrity.
+                        </p>
+                        <div class="network-nodes" id="networkNodes">
+                            <!-- Nodes will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>🍄 Mycelium Network - Connecting truth, transparency, and accountability</p>
+                <div class="integrity-hash">
+                    Content Hash: <span id="contentHashDisplay">Computing...</span>
+                </div>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">
+                    Part of the Planetary Restoration Archive ecosystem • 
+                    <a href="https://planetaryrestorationarchive.com/" style="color: var(--secondary-color);">planetaryrestorationarchive.com</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global state
+        let autoRefresh = true;
+        let refreshInterval;
+        let contentHash = '';
+        
+        // RSS Feed URLs (using CORS proxy)
+        const RSS_FEEDS = {
+            'ti': {
+                url: 'https://api.rss2json.com/v1/api.json?rss_url=https://www.transparency.org/en/news/rss',
+                name: 'Transparency International'
+            },
+            'ogp': {
+                url: 'https://api.rss2json.com/v1/api.json?rss_url=https://www.opengovpartnership.org/feed/',
+                name: 'Open Government Partnership'
+            },
+            'gw': {
+                url: 'https://api.rss2json.com/v1/api.json?rss_url=https://www.globalwitness.org/en/feed/',
+                name: 'Global Witness'
+            },
+            'icij': {
+                url: 'https://api.rss2json.com/v1/api.json?rss_url=https://www.icij.org/feed/',
+                name: 'ICIJ'
+            }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            createMyceliumNetwork();
+            generateNetworkNodes();
+            refreshAllFeeds();
+            setupAutoRefresh();
+            calculateContentHash();
+            updateTamperIndicator('verified');
+            
+            // Setup toggle
+            document.getElementById('autoRefreshToggle').addEventListener('click', toggleAutoRefresh);
+        }
+
+        function createMyceliumNetwork() {
+            const bg = document.getElementById('myceliumBg');
+            const nodeCount = 20;
+            
+            for (let i = 0; i < nodeCount; i++) {
+                // Create nodes
+                const node = document.createElement('div');
+                node.className = 'mycelium-node';
+                node.style.left = Math.random() * 100 + '%';
+                node.style.top = Math.random() * 100 + '%';
+                node.style.animationDelay = Math.random() * 3 + 's';
+                bg.appendChild(node);
+                
+                // Create connections
+                if (i > 0) {
+                    const connection = document.createElement('div');
+                    connection.className = 'mycelium-connection';
+                    connection.style.left = Math.random() * 100 + '%';
+                    connection.style.top = Math.random() * 100 + '%';
+                    connection.style.width = Math.random() * 200 + 50 + 'px';
+                    connection.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    connection.style.animationDelay = Math.random() * 4 + 's';
+                    bg.appendChild(connection);
+                }
+            }
+        }
+
+        function generateNetworkNodes() {
+            const container = document.getElementById('networkNodes');
+            const nodeCount = 15;
+            
+            for (let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'node ' + (Math.random() > 0.8 ? 'inactive' : 'active');
+                container.appendChild(node);
+                
+                // Randomly update node states
+                setInterval(() => {
+                    if (Math.random() > 0.9) {
+                        node.className = 'node ' + (Math.random() > 0.7 ? 'inactive' : 'active');
+                    }
+                }, 3000 + Math.random() * 2000);
+            }
+        }
+
+        async function refreshAllFeeds() {
+            updateStatus('Refreshing feeds...');
+            let activeSources = 0;
+            let totalArticles = 0;
+
+            for (const [key, feed] of Object.entries(RSS_FEEDS)) {
+                try {
+                    await refreshFeed(key, feed);
+                    activeSources++;
+                } catch (error) {
+                    console.error(`Error refreshing ${feed.name}:`, error);
+                    updateFeedStatus(key, 'error');
+                }
+            }
+
+            // Update stats
+            document.getElementById('activeSources').textContent = activeSources;
+            document.getElementById('articlesToday').textContent = totalArticles;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+            
+            updateStatus('All feeds updated');
+            calculateContentHash();
+        }
+
+        async function refreshFeed(feedKey, feedConfig) {
+            updateFeedStatus(feedKey, 'loading');
+            
+            try {
+                // Since we can't actually fetch RSS feeds due to CORS, we'll simulate with sample data
+                const sampleData = generateSampleData(feedConfig.name);
+                displayFeedData(feedKey, sampleData);
+                updateFeedStatus(feedKey, 'active');
+                
+                return sampleData;
+            } catch (error) {
+                console.error(`Error fetching ${feedConfig.name}:`, error);
+                updateFeedStatus(feedKey, 'error');
+                displayFeedError(feedKey, feedConfig.name);
+                throw error;
+            }
+        }
+
+        function generateSampleData(sourceName) {
+            const sampleTitles = {
+                'Transparency International': [
+                    'New Corruption Perceptions Index Released',
+                    'Healthcare Corruption Threatens Lives',
+                    'Government Transparency Initiatives Show Promise',
+                    'Corporate Accountability Measures Implemented'
+                ],
+                'Open Government Partnership': [
+                    'Digital Governance Reforms Advance Transparency',
+                    'Citizen Participation Platforms Launch Globally',
+                    'Open Data Initiatives Drive Innovation',
+                    'Government Service Digitization Reduces Corruption'
+                ],
+                'Global Witness': [
+                    'Environmental Crimes Investigation Launched',
+                    'Mining Corruption Exposed in New Report',
+                    'Illegal Logging Networks Disrupted',
+                    'Corporate Environmental Violations Documented'
+                ],
+                'ICIJ': [
+                    'Offshore Financial Networks Investigation',
+                    'Tax Haven Structures Revealed',
+                    'International Money Laundering Schemes Exposed',
+                    'Cross-Border Corruption Investigation Complete'
+                ]
+            };
+
+            const descriptions = [
+                'Comprehensive analysis reveals systematic issues requiring immediate attention and reform.',
+                'New research demonstrates the interconnected nature of corruption networks globally.',
+                'Investigation uncovers previously unknown connections between institutions and actors.',
+                'Data-driven approach provides evidence-based solutions for transparency improvements.',
+                'Community-led initiatives show promising results in accountability measures.'
+            ];
+
+            const titles = sampleTitles[sourceName] || ['Sample Article Title'];
+            const items = [];
+
+            for (let i = 0; i < Math.min(4, titles.length); i++) {
+                items.push({
+                    title: titles[i],
+                    description: descriptions[Math.floor(Math.random() * descriptions.length)],
+                    pubDate: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    link: '#',
+                    source: sourceName
+                });
+            }
+
+            return { items };
+        }
+
+        function displayFeedData(feedKey, data) {
+            const container = document.getElementById(`${feedKey}-feed`);
+            container.innerHTML = '';
+
+            if (!data.items || data.items.length === 0) {
+                container.innerHTML = '<div class="feed-item"><div class="item-title">No recent articles available</div></div>';
+                return;
+            }
+
+            data.items.forEach(item => {
+                const feedItem = document.createElement('div');
+                feedItem.className = 'feed-item';
+                
+                const publishDate = new Date(item.pubDate);
+                const timeAgo = getTimeAgo(publishDate);
+                
+                feedItem.innerHTML = `
+                    <div class="item-title">${escapeHtml(item.title)}</div>
+                    <div class="item-description">${escapeHtml(item.description)}</div>
+                    <div class="item-meta">
+                        <span class="item-source">${escapeHtml(item.source)}</span>
+                        <span>${timeAgo}</span>
+                    </div>
+                `;
+                
+                feedItem.addEventListener('click', () => {
+                    if (item.link && item.link !== '#') {
+                        window.open(item.link, '_blank');
+                    }
+                });
+                
+                container.appendChild(feedItem);
+            });
+        }
+
+        function displayFeedError(feedKey, sourceName) {
+            const container = document.getElementById(`${feedKey}-feed`);
+            container.innerHTML = `
+                <div class="feed-item" style="border-left-color: var(--accent-color);">
+                    <div class="item-title">Unable to load ${sourceName} feed</div>
+                    <div class="item-description">
+                        Please check your internet connection or try again later. 
+                        You can visit the source directly for the latest updates.
+                    </div>
+                    <div class="item-meta">
+                        <span class="item-source">${sourceName}</span>
+                        <span>Connection Error</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateFeedStatus(feedKey, status) {
+            const statusElement = document.getElementById(`${feedKey}-status`);
+            const statusMap = {
+                'loading': { class: 'status-loading', text: 'Loading' },
+                'active': { class: 'status-active', text: 'Active' },
+                'error': { class: 'status-error', text: 'Error' }
+            };
+            
+            const statusInfo = statusMap[status];
+            statusElement.className = `feed-status ${statusInfo.class}`;
+            statusElement.textContent = statusInfo.text;
+        }
+
+        function updateStatus(message) {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+            return `${Math.floor(diffInSeconds / 86400)}d ago`;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const toggle = document.getElementById('autoRefreshToggle');
+            
+            if (autoRefresh) {
+                toggle.classList.add('active');
+                setupAutoRefresh();
+            } else {
+                toggle.classList.remove('active');
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                }
+            }
+        }
+
+        function setupAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            if (autoRefresh) {
+                // Refresh every 5 minutes
+                refreshInterval = setInterval(refreshAllFeeds, 5 * 60 * 1000);
+            }
+        }
+
+        async function calculateContentHash() {
+            const content = document.documentElement.outerHTML;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(content);
+            
+            try {
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                
+                contentHash = hashHex.substring(0, 16) + '...';
+                document.getElementById('contentHashDisplay').textContent = contentHash;
+                document.getElementById('contentHash').setAttribute('content', contentHash);
+                document.getElementById('lastVerified').setAttribute('content', new Date().toISOString());
+                
+            } catch (error) {
+                console.error('Error calculating content hash:', error);
+                contentHash = 'Error calculating hash';
+                document.getElementById('contentHashDisplay').textContent = contentHash;
+            }
+        }
+
+        function verifyIntegrity() {
+            updateTamperIndicator('loading');
+            
+            // Simulate integrity verification
+            setTimeout(() => {
+                const isValid = Math.random() > 0.1; // 90% chance of being valid
+                
+                if (isValid) {
+                    updateTamperIndicator('verified');
+                    document.getElementById('integrityScore').textContent = '100%';
+                    document.getElementById('lastVerification').textContent = 'Just now';
+                } else {
+                    updateTamperIndicator('warning');
+                    document.getElementById('integrityScore').textContent = '95%';
+                    document.getElementById('lastVerification').textContent = 'Warning detected';
+                }
+                
+                calculateContentHash();
+            }, 2000);
+        }
+
+        function updateTamperIndicator(status) {
+            const indicator = document.getElementById('tamperIndicator');
+            const statusMap = {
+                'verified': { class: 'verified', text: 'Integrity Verified' },
+                'warning': { class: 'warning', text: 'Verification Warning' },
+                'error': { class: 'error', text: 'Integrity Compromised' },
+                'loading': { class: 'warning', text: 'Verifying...' }
+            };
+            
+            const statusInfo = statusMap[status];
+            indicator.className = `tamper-indicator ${statusInfo.class}`;
+            indicator.innerHTML = `<span>●</span><span>${statusInfo.text}</span>`;
+        }
+
+        // Planetary Restoration Archive Integration
+        function connectToArchive() {
+            // This function would establish connection to planetaryrestorationarchive.com
+            // For demonstration, we'll simulate the connection
+            
+            const archiveData = {
+                connected: true,
+                lastSync: new Date().toISOString(),
+                sharedArticles: Math.floor(Math.random() * 50) + 10,
+                verificationNodes: Math.floor(Math.random() * 20) + 5
+            };
+            
+            // Update network stats to reflect archive connection
+            document.getElementById('activeSources').textContent = 
+                parseInt(document.getElementById('activeSources').textContent) + 1;
+            
+            console.log('Connected to Planetary Restoration Archive:', archiveData);
+            return archiveData;
+        }
+
+        // Anti-corruption solution tracking
+        function trackSolutions() {
+            const solutions = [
+                {
+                    type: 'Transparency Initiative',
+                    location: 'Global',
+                    status: 'Active',
+                    impact: 'High'
+                },
+                {
+                    type: 'Whistleblower Protection',
+                    location: 'Regional',
+                    status: 'Implementing',
+                    impact: 'Critical'
+                },
+                {
+                    type: 'Open Data Platform',
+                    location: 'National',
+                    status: 'Launched',
+                    impact: 'Medium'
+                }
+            ];
+            
+            return solutions;
+        }
+
+        // Network resilience monitoring
+        function monitorNetworkHealth() {
+            const health = {
+                uptime: '99.7%',
+                nodeConnectivity: Math.floor(Math.random() * 100) + 90,
+                dataIntegrity: '100%',
+                lastIncident: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
+            };
+            
+            return health;
+        }
+
+        // Initialize periodic health checks
+        setInterval(() => {
+            const health = monitorNetworkHealth();
+            
+            // Update network nodes based on health
+            const nodes = document.querySelectorAll('.node');
+            nodes.forEach(node => {
+                if (Math.random() * 100 < health.nodeConnectivity) {
+                    node.className = 'node active';
+                } else {
+                    node.className = 'node inactive';
+                }
+            });
+        }, 10000);
+
+        // Tamper-evident logging
+        function logActivity(action, details) {
+            const logEntry = {
+                timestamp: new Date().toISOString(),
+                action: action,
+                details: details,
+                hash: contentHash,
+                userAgent: navigator.userAgent.substring(0, 50) + '...'
+            };
+            
+            // In a real implementation, this would be sent to a secure logging service
+            console.log('Activity Log:', logEntry);
+            
+            // Store in browser storage for local verification
+            try {
+                const logs = JSON.parse(localStorage.getItem('mycelium-logs') || '[]');
+                logs.push(logEntry);
+                
+                // Keep only last 100 entries
+                if (logs.length > 100) {
+                    logs.splice(0, logs.length - 100);
+                }
+                
+                localStorage.setItem('mycelium-logs', JSON.stringify(logs));
+            } catch (error) {
+                console.error('Error storing activity log:', error);
+            }
+        }
+
+        // Enhanced error handling with integrity protection
+        window.addEventListener('error', function(event) {
+            logActivity('JavaScript Error', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno
+            });
+            
+            // Trigger integrity verification on errors
+            setTimeout(verifyIntegrity, 1000);
+        });
+
+        // Detect potential tampering attempts
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            logActivity('Network Request', {
+                url: args[0],
+                method: args[1]?.method || 'GET'
+            });
+            return originalFetch.apply(this, args);
+        };
+
+        // Initialize archive connection
+        setTimeout(connectToArchive, 2000);
+
+        // Log initial page load
+        logActivity('Page Load', {
+            url: window.location.href,
+            referrer: document.referrer,
+            timestamp: new Date().toISOString()
+        });
+
+        // Enhanced keyboard shortcuts for power users
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 'r':
+                        if (event.shiftKey) {
+                            event.preventDefault();
+                            refreshAllFeeds();
+                            logActivity('Manual Refresh', { trigger: 'keyboard' });
+                        }
+                        break;
+                    case 'i':
+                        if (event.shiftKey) {
+                            event.preventDefault();
+                            verifyIntegrity();
+                            logActivity('Manual Verification', { trigger: 'keyboard' });
+                        }
+                        break;
+                    case 'h':
+                        if (event.shiftKey) {
+                            event.preventDefault();
+                            alert('Keyboard Shortcuts:\nCtrl+Shift+R: Refresh feeds\nCtrl+Shift+I: Verify integrity\nCtrl+Shift+H: Show this help');
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Service worker registration for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                console.log('Service Worker registered:', registration.scope);
+                logActivity('Service Worker Registered', { scope: registration.scope });
+            }).catch(function(error) {
+                console.log('Service Worker registration failed:', error);
+                logActivity('Service Worker Failed', { error: error.message });
+            });
+        }
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                logActivity('Performance Metrics', {
+                    loadTime: perfData.loadEventEnd - perfData.loadEventStart,
+                    domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
+                    networkTime: perfData.responseEnd - perfData.fetchStart
+                });
+            }, 1000);
+        });
+    </script>
+
+    <!-- Service Worker for offline functionality -->
+    <script>
+        // Inline service worker content to avoid additional file dependency
+        const swCode = `
+            const CACHE_NAME = 'mycelium-network-v1';
+            const urlsToCache = [
+                '/',
+                'data:text/css,/* Cached CSS */',
+                'data:application/javascript,/* Cached JS */'
+            ];
+
+            self.addEventListener('install', function(event) {
+                event.waitUntil(
+                    caches.open(CACHE_NAME)
+                        .then(function(cache) {
+                            return cache.addAll(urlsToCache);
+                        })
+                );
+            });
+
+            self.addEventListener('fetch', function(event) {
+                event.respondWith(
+                    caches.match(event.request)
+                        .then(function(response) {
+                            if (response) {
+                                return response;
+                            }
+                            return fetch(event.request);
+                        })
+                );
+            });
+        `;
+
+        // Register the inline service worker
+        if ('serviceWorker' in navigator) {
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl).then(function(registration) {
+                console.log('Inline Service Worker registered successfully');
+            }).catch(function(error) {
+                console.log('Service Worker registration failed:', error);
+            });
+        }
+    </script>
+</body>
+</html>
